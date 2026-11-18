@@ -1,0 +1,49 @@
+/Users/admin/PycharmProjects/PythonProject8/.venv/lib/python3.11/site-packages/torch/jit/_trace.py:1006: FutureWarning: `torch.jit.trace` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+/Users/admin/PycharmProjects/PythonProject8/.venv/lib/python3.11/site-packages/torch/jit/_trace.py:1145: FutureWarning: `torch.jit.trace_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+input  shape/dtype/contiguous: (256, 64) torch.float32 True
+output shape/dtype/contiguous: (256, 10) torch.float32 True
+
+Autograd graph (walk grad_fn from output):
+AddmmBackward0
+  AccumulateGrad
+  ReluBackward0
+    AddmmBackward0
+      AccumulateGrad
+      AccumulateGrad
+      TBackward0
+        AccumulateGrad
+  TBackward0
+    AccumulateGrad
+
+FX graph:
+graph():
+    %input_1 : [num_users=1] = placeholder[target=input]
+    %_0 : [num_users=1] = call_module[target=0](args = (%input_1,), kwargs = {})
+    %_1 : [num_users=1] = call_module[target=1](args = (%_0,), kwargs = {})
+    %_2 : [num_users=1] = call_module[target=2](args = (%_1,), kwargs = {})
+    return _2
+
+eager          : 0.657 ms/call
+compile first call (compile cost): 1.32 s
+torch.compile  : 0.726 ms/call  (speedup 0.90x)
+jit.trace      : 0.734 ms/call  (speedup 0.89x)
+
+contiguous M: shape=(4096, 4096) dtype=torch.float32 stride=(4096, 1) contiguous=True
+
+transpose M.t() (non-contig): shape=(4096, 4096) dtype=torch.float32 stride=(1, 4096) contiguous=False
+
+strided M[:, ::2] (non-contig): shape=(4096, 2048) dtype=torch.float32 stride=(4096, 2) contiguous=False
+
+operation: v * 2
+  contiguous M                          3.062 ms
+  transpose M.t() (non-contig)          2.937 ms
+  strided M[:, ::2] (non-contig)        1.966 ms
+
+operation: v.sum(dim=1)
+  contiguous M                          1.117 ms
+  transpose M.t() (non-contig)          3.041 ms
+  strided M[:, ::2] (non-contig)        0.881 ms
+
+.contiguous() copy cost: 24.166 ms

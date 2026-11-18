@@ -1,0 +1,4 @@
+value  mine: 8.550302161883902  torch: 8.550302161883902
+max |mine - torch|    = 0.0
+max |mine - numerical| = 6.477218761347103e-11
+PASS: both differences < 1e-6

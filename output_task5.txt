@@ -1,0 +1,2 @@
+my engine  median   8.8264 s over 5 runs | final loss 0.2830 acc 0.865
+PyTorch    median   0.0083 s over 5 runs | final loss 0.2830 acc 0.865
